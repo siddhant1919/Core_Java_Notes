@@ -661,3 +661,331 @@ Overriding toString, equals and hashcode
 
 Collections
 
+Multitasking 
+  performing multiple tasks at single time
+  increases performance
+  can be achieved using multithreading and multiprocessing.
+
+Multithreading
+  Executing multiple threads at single time. 
+  most suitable at programming level
+  provides predefinde API
+
+multiprocessing
+  When one system is connected to multiple processor in order to complete the task.
+  best suitable at system lavel.
+
+diff bet Process and thread
+  process
+    a program which executes task
+    heavy weight
+    takes more time in context switching
+    slow communication
+    each process has different address space
+    not dependent on other process
+    not require synchronization
+    uses more resource consumption
+
+  thread
+    a sub part of process
+    light weight
+    takes less time in context switching
+    fast communication
+    each thread has same address space in a process
+    dependent on other treads
+    may require synchronization
+    uses less resource consumption
+
+ways to create thread
+  1.Thread class
+     has constructors and methods.
+     present in java.lang package
+     
+     steps to create:
+     class should extend Thread class
+     override run method
+     write a task in run() method
+     to start a thread in main method we have to create an object and use start() method(eg: obj.start())
+     JVM allocates processor to thread using threadSchedular
+
+    Thread lifecycle
+      create
+      Runnable
+      Running
+      Non runnable state
+      Dead state
+
+    Ex
+    class Test extends Thread
+    {
+      public void run()
+      {
+        Sop("Thread task");
+      }
+
+      PSVM()
+      {
+        Test t = new Test();
+        t.start();
+      }
+    }
+
+  2.Runnable interface
+    It is a interface present in java.lang package has only one method i.e run()
+    Thread class implements Runnable interface
+    Its better than 1st way because if a class will not be able extend Thread class wants to extend another class because java doesnt support multiple inheritance
+
+    Steps to create:
+    implement the Runable Interface
+    Override the run Method
+    Create Object Of The Class Which Implements this interface
+    then create a Thread class's object
+    and pass the main classes object into Thread classes constructor.
+    and then start() a thread using Thread class's object. 
+
+    Ex
+    class Test implements Runnable
+    {
+      public void run()
+      {
+        Sop("Thread task");
+      }
+
+      PSVM()
+      {
+        Test t = new Test();
+
+        Thread th = new Thread(t);
+        th.start();
+      }
+    }
+
+while creating a thread JVM first creats the thread of main method.
+
+Performing single task from single thread
+  creating one task(run()) and one object
+
+performing single task from mutiple thread
+  creating one task(run()) and multiple objects
+
+Performing multiple task from single thread
+  Not possible
+
+Performing multiple task from multiple thread
+   creating multiple tasks i.e run method in multiple classes and creating thier objects. 
+
+
+Constructors of Thread class
+  default constructor -> Thread()
+  Parametrized   -> Thread(Runnable target)
+  parametrized with name-> Thread(String name)
+  parametrized with name-> Thread(Runnable target,String name)
+  Thread(Threadgroup tg, Runnable target)
+  Thread(ThreadGroup group, String name)
+  Thread(ThreadGroup g, Runnable r, String n)
+  Thread(ThreadGroup group, Runnable target, String name)
+  Thread(ThreadGroup group, Runnable target, String name, long stackSize)
+
+
+Methods of Thread Class
+  1) run(), start(), currentThread(), isAlive()
+  2) getName(), setName(String name)
+  3) isDeamon(), setDeamon(boolean b)
+  4) getPriority(),setPriority(int p),getPriorityLevel()
+  5) sleep(), join(), yield()
+  6) interrupt(), isInterrupted(), interrupted()
+
+Inter Thread communication
+  wait(), notify(), notifyAll() -> these all are present in object class
+
+Naming a Thread
+  getting a name of thread 
+    Sop(Thread.currentThread().getName());
+
+  setting a name of thread 
+    Thread.currentThread().setName("Sidd");
+  
+Daemon Thread
+  Which runs in the background
+  Used to provide service to the thread(eg: gc, spellchecker)
+  By Default daemons are false for every new threads created by JVM
+  But we can change it using method setDaemon(true/false).
+  Its life depends on the main thread on the background which it runs
+  If parent thread is daemon then child is daemon by defualt.
+  Most of the time daemon threads priority should be less.
+  Unless a parent thread performs any task daemon will not start.
+
+  Case 1:
+    We have to create daemon thread before starting thread.
+  Case 2:
+    we cannot create main thread as daemon
+  
+  Methods:
+    setDaemon(Boolean b)
+    isDaemon()
+  
+  Ex:
+  Class Test extends Thread
+  {
+    public void run()
+    {
+      sop("Child Thread");
+    }
+
+    PSVM(String[] args)
+    {
+      sop("main Thread");
+      Test t =new Test();
+      t.setDaemon(True);
+      t.start();
+    }
+  }
+  
+Thread Priority
+
+  JVM provides the priority to each thread and allocate the processor according to it.
+  It is integer value 1 - 10
+  A thread having high value gets first priority
+  The default values assigned to all threads are same i.e.,5 (norm priority)
+  Priorities are inherited by parent thread
+  main threads priority is 5
+  Windows does'nt support priorities.
+
+  Methods:
+  setPriority(): sets priority of this thread
+  getPriority(): returns current priority level 
+    int getMaxPriority(): Returns maximum possible priority level allowed
+
+Prevent Thread execution Methods:
+Sleep()
+  Working:
+  This method suspends a currently executing thread for specified time in milliseconds(0-999999).
+  should be written in try block.
+  Syntax:
+  ex: currentT hread.sleep(1000);
+
+  Prototypes: 
+  1) public static native void sleep(long millisec) throws Interruptedxception  -> written in another language  
+  2) public final void sleep(long millisec, int name)throws InterruptedException -> written in java  
+
+yield()
+  Working:
+  stops the current executing thread and give a chance to other thread for execution that has higher or same priority.
+  Thread provides the hint to the thread-schedular, then it depends on thread-schedular to accept on ignore the hint.
+  Output may vary
+  Yields control back to other waiting or runnable threads if any exist within its own thread group
+  
+  Syntax:
+  ex: Thread.yield();
+
+  Prototype:
+  1)public static native void yield();
+
+join()
+  Wroking:
+  if a thread wants to want to wait for another thread to complete its task, then we should use join() method.
+  waits until another thread terminates or dies.
+
+  syntax:
+  t1.join(); //t1 is thread that will execute and the thread in which t1.join() in written will stop
+
+  Prototype:
+  1) public final void join() throws InterruptedException 
+  2) public final synchronized join(long millis)
+  3) public final synchronized join(long millis,int nanos)
+
+Thread interrupt in java
+  Used to to interrupt an executing thread.
+  interrupt() method will only workds when the thread is in sleeping or waiting state(sleep() or wait()).
+  If a thread is not in sleeping or waiting state then calling the interrupt() method will perform normal behavior.
+  To check whether the thread has been interrupted use interruped() method of Thread class.
+  interrupt() throws InterruptedException
+
+  prtotype:
+  public void interrupt()
+
+  syntax:
+  t.interrupt();
+
+  Methods:
+  interrupted():
+  Used to check whether the thread is interrupted or not.
+  returns true if this thread was interrupted by some other thread while it was blocked in a particular monitor lock operation then false otherwise.
+  clears the interrupted from true to false if thread is interrupted(also used to stop the interruption)
+  Prototype:
+  1) public static boolean interrupted()
+
+  isInterrupted():
+  Used to check whether the thread is interrupted or not.
+  returns boolean value if it's true then its means the thread was interrupted else no.
+  does'nt clears the interrupted from true to false if thread is interrupted.
+  Prototype:
+  1) public boolean isinterupted()
+
+Synchronization
+  It is a process through which we control the accessiblity os multiple thread to a perticular shared resource
+  Synchronization allows one object (thread/process etc.) access a resource at any given time by ensuring mutual exclusion between threads accessing same resources.
+  Problems if we don't use synchronization:
+  - Data corruption/inconsistency
+  - Deadlock (when two threads are blocked on each other).
+
+  package used:
+    import java.util.concurrent;
+  
+  Syntax:
+  synchronized void methodName()
+  {
+    //code
+  }
+
+  synchronized block:
+   
+  The code inside a synchronized block can be executed by only one thread at any given time, even though multiple methods may execute concurrently in different parts of your program. This ensures that all changes though multiple threads may have entered this method simultaneously and tried to acquire lock.
+  Synchronized methods in Java provide mutual exclusion of access for all invocations within that particular 
+  object instance. This ensures data integrity as well as avoids deadlocks between different objects.
+  The keyword "synchronized" can be applied at method level, class-level and even a statement
+
+  Syntax:
+  synchronized(objectReference){
+    code
+    }
+    Example:
+    private int count =0 ;
+    synchronized(this){
+      this.count++;
+      }
+      System.out.println("Count:"+this.count);
+      Output : Count:2
+      Note:- If you want to synchronize multiple statements or blocks inside your program
+      then instead using synchronized keyword with an Object reference You should wrap the entire group of statements into one single synchronized block
+      
+Static synchronization
+  Using this the shared resource will be common for all objects.
+
+  Problem that is solves:
+  Static variables may not have the same value across instances because they're shared amongst them.
+  Solution:
+  Use static synchronisation when there's only one copy of an object being created by JVM.
+  How it works:
+
+Interthread communication
+  Inter thread communication is a mechanism in which a thread releases the lock and enters into paused state and another thread acquires the lock and continue to execute.
+  methods:
+  wait():
+  It suspends execution until another thread invokes the notify()ornotifyall()method on the current object (the calling thread).
+
+  notify():
+  
+
+
+
+
+  notifyAll():
+
+  
+
+
+
+
+
+
