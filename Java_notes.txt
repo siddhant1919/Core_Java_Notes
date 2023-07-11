@@ -3,6 +3,21 @@ Intro to Java
   write once run anywhere
   Java applications are compiled to byte code that can run on any Java Virtual Machine
 
+
+Syntactical Similarities:
+  1. Object-Oriented Programming: Both Java and C++ are object-oriented programming languages, and they support concepts such as classes, objects, inheritance, and polymorphism.
+  2. Control Structures: Java and C++ have similar control structures, including if-else statements, for loops, while loops, and switch statements.
+  3. Data Types: Both languages have similar basic data types, such as integers, floating-point numbers, characters, and booleans.
+
+Syntactical Dissimilarities:
+  1. Syntax and Naming Conventions: Java and C++ have different syntax and naming conventions. For example, in Java, classes are defined using the keyword "class," whereas in C++, the keyword "class" is used with additional syntax.
+  2. Memory Management: Java uses automatic garbage collection to manage memory, while C++ requires manual memory management through the use of constructors, destructors, and memory allocation/deallocation operators like "new" and "delete."
+  3. Pointers: C++ supports the use of pointers, allowing direct memory manipulation and dynamic memory allocation. Java, on the other hand, does not have explicit pointer manipulation and provides automatic memory management through references.
+  4. Exception Handling: Both languages support exception handling, but the syntax and handling mechanisms differ. Java uses checked and unchecked exceptions, while C++ uses a try-catch block with specific exception types.
+  5. Standard Libraries: Java and C++ have their own standard libraries with different functions and classes for various tasks. For example, Java has libraries like java.util and java.io, while C++ has libraries like std::vector and std::string.
+
+
+
 Java directory
   The Java directory contains multiple folders and files, each with a specific purpose. Here is an overview of the main folders and files in a typical Java installation:
 
@@ -167,6 +182,28 @@ Data Types in Java
   Char Data Type
     The char data type is used to store characters.
   
+Data Compatibility 
+
+  It refers to the ability to assign or pass values between different data types in a consistent and predictable manner. Java provides several mechanisms for data compatibility, such as implicit type conversion, explicit type casting, and promotion.
+  1. Implicit Type Conversion:
+  Java allows automatic conversion of values from one data type to another when the destination type can accommodate the value without loss of precision or information.
+
+  int myInt = 10;
+  double myDouble = myInt; // Implicit conversion from int to double
+
+  2. Explicit Type Casting:
+  Java also supports explicit type casting, which allows you to convert a value from one data type to another explicitly. This is done by specifying the target type in parentheses before the value being casted.
+
+  double myDouble = 10.5;
+  int myInt = (int) myDouble; // Explicit casting from double to int
+
+
+  3. Promotion:
+  Promotion occurs when smaller data types are automatically converted to larger data types to perform operations without loss of precision.
+  int myInt = 5;
+  double myDouble = 2.5;
+  double result = myInt + myDouble; // Promotion of int to double
+
 Array
 
   Java array is an object which contains elements of a similar data type. Additionally, The elements of an array are stored in a contiguous memory location. It is a data structure where we store similar elements. We can store only a fixed set of elements in a Java array.
@@ -204,8 +241,6 @@ Control statements
   Jump statements
     break statement
     continue statement
-
-Data type compatibility
 
 09-02-2023
 Static variables and methods
@@ -264,7 +299,42 @@ Constructors
 initializing reference variables using constructors
 
 Pass by value v/s pass by reference
+  Pass-by-Value:
+  In Java, when you pass a variable as an argument to a method, a copy of the value of the variable is created and passed to the method. The method operates on the copy, not the original variable. Any modifications made to the copy of the variable inside the method do not affect the original variable outside the method.
+
+  Ex: 
+  public class PassByValueExample {
+    public static void modifyValue(int num) {
+        num = 20; // Modifying the copy of the value
+    }
+
+    public static void main(String[] args) {
+        int number = 10;
+        modifyValue(number); // Passing the value of 'number'
+        System.out.println(number); // Output: 10, original value remains unchanged
+    }
+  }
+
+
+  Pass-by-Reference:
+  In some programming languages, such as C++, there is a concept of pass-by-reference, where a method can directly modify the original variable. However, in Java, there is no direct pass-by-reference. Instead, you can achieve similar effects by passing objects as arguments. When an object is passed as an argument, the reference to the object is copied, not the object itself. Therefore, modifications made to the object's properties or fields within the method will affect the original object.
+
+  Ex:
+    public class PassByReferenceExample {
+    public static void modifyValue(StringBuilder sb) {
+        sb.append(" World!"); // Modifying the object referred to by 'sb'
+    }
+
+    public static void main(String[] args) {
+        StringBuilder message = new StringBuilder("Hello");
+        modifyValue(message); // Passing the reference to 'message'
+        System.out.println(message); // Output: Hello World!, original object modified
+    }
+  }
+
+
   https://www.youtube.com/watch?v=yy7agQfkC9c&list=PLEbnTDJUr_Iekh7CGDsDizndTgBFruHn1&index=6
+
 
 Re-assigning a reference variable
 
@@ -273,6 +343,16 @@ Passing reference variable to method
 Initializing reference variable of different class
 
 Heap memory and stack memory
+
+  Heap
+    In Java, heap memory is used for storing objects and data that are dynamically allocated at runtime. The JVM manages the heap memory, which means that the programmer does not need to explicitly allocate or deallocate memory on the heap.
+    When an object is created in Java, it is allocated on the heap memory. The JVM tracks the objects on the heap using a data structure called the "heap space". The heap space is divided into multiple generations, with objects that are newer and more frequently accessed being placed in the younger generations, and objects that are older and less frequently accessed being placed in the older generations.
+    Java heap memory is managed using a process called "garbage collection". Garbage collection is a process that identifies and releases unused objects in the heap memory to free up space for new objects. The garbage collector periodically scans the heap space and identifies objects that are no longer in use. The garbage collector then releases the memory occupied by these objects, making it available for new objects to be allocated.
+    Java heap memory can be configured using JVM command-line options to set the initial and maximum size of the heap memory. If an application needs more memory than what is available on the heap, the JVM may throw an OutOfMemoryError.
+    It is important to note that objects on the heap are accessible by multiple threads. To ensure thread-safety, programmers must use synchronization techniques to avoid data races and ensure that objects are accessed in a safe and consistent manner.
+    In summary, heap memory in Java is used for storing dynamically allocated objects and data. The JVM manages the heap memory using a data structure called the heap space and a garbage collector to release unused objects. The programmer does not need to explicitly allocate or deallocate memory on the heap. Heap memory can be configured using JVM command-line options and is accessible by multiple threads, requiring synchronization techniques to ensure thread-safety.
+
+
   Stack 
     In Java, stack memory is used for storing method-specific variables and data, and is used for method execution. When a method is called, a new block of memory is created in the stack for that method's variables and data, and when the method finishes execution, the memory is automatically released.
     The Java Virtual Machine (JVM) divides memory into two types: heap memory and stack memory. Heap memory is used for storing objects that are dynamically allocated, while stack memory is used for storing primitive types and references to objects.
@@ -283,13 +363,7 @@ Heap memory and stack memory
 
     they both are stored in RAM
 
-  Heap
-    In Java, heap memory is used for storing objects and data that are dynamically allocated at runtime. The JVM manages the heap memory, which means that the programmer does not need to explicitly allocate or deallocate memory on the heap.
-    When an object is created in Java, it is allocated on the heap memory. The JVM tracks the objects on the heap using a data structure called the "heap space". The heap space is divided into multiple generations, with objects that are newer and more frequently accessed being placed in the younger generations, and objects that are older and less frequently accessed being placed in the older generations.
-    Java heap memory is managed using a process called "garbage collection". Garbage collection is a process that identifies and releases unused objects in the heap memory to free up space for new objects. The garbage collector periodically scans the heap space and identifies objects that are no longer in use. The garbage collector then releases the memory occupied by these objects, making it available for new objects to be allocated.
-    Java heap memory can be configured using JVM command-line options to set the initial and maximum size of the heap memory. If an application needs more memory than what is available on the heap, the JVM may throw an OutOfMemoryError.
-    It is important to note that objects on the heap are accessible by multiple threads. To ensure thread-safety, programmers must use synchronization techniques to avoid data races and ensure that objects are accessed in a safe and consistent manner.
-    In summary, heap memory in Java is used for storing dynamically allocated objects and data. The JVM manages the heap memory using a data structure called the heap space and a garbage collector to release unused objects. The programmer does not need to explicitly allocate or deallocate memory on the heap. Heap memory can be configured using JVM command-line options and is accessible by multiple threads, requiring synchronization techniques to ensure thread-safety.
+  
   https://www.youtube.com/watch?v=_GK3WoFFKUE
 
 final keyword
@@ -325,14 +399,31 @@ Overriding:
   
 
 "super" keyword:
+  It is a refrence variable which is used to refer immediate parent class object. 
   "super" keyword is used to refer to the parent class of the current class.
   It is mainly used to call a method or constructor in the parent class from the subclass.
-  It is also used to access the parent class's instance variables or methods that have been hidden by a   subclass.
+  It is also used to access the parent class's instance variables or methods that have been hidden by a subclass.
+
+  Uses:
+  Refers to the immediate parent class instance variable.
+  Can be used to invoke immediateparent class method(eg.  super.methodOfParentClas();)
+  can be used to invoke immediate parent class constuctor(eg: super(); )
+
+
 
 "this" keyword:
+  It is reference variable which refers to current object
   "this" keyword is used to refer to the current instance of the class.
+
+  Uses:
   It is mainly used to differentiate between instance variables and local variables that have the same name.
-  It is also used to call a constructor from another constructor in the same class.
+  Can be usdd to invoke current class constructor
+  It is also used to call a constructor from another constructor in the same class(Eg: this(); -> calls default constructor, this(10); -> calls parameterized constructor)
+  Can be used to invoke cuurent class methods
+  can be used to pass as an argument in method call
+  Can be used to pass as an argument in the constructor call.
+  Can be used to to return class instance from method(Eg: return this)
+
 
 Rules of overriding and overloading of methods
   Method Overriding:
@@ -374,6 +465,60 @@ Why we get two class files if one file has two classes ?
   For example, suppose you have a Java source file named MyClasses.java that defines two classes, ClassA and ClassB.
   After compiling this file with javac MyClasses.java, you will end up with two class files: ClassA.class and ClassB.class.
   The reason for separating each class into its own class file is to make it easier to reuse code in other programs. When you compile a Java source file, you can choose to compile only the classes that have changed since the last compilation, which saves time and makes the build process more efficient. Additionally, separating each class into its own file makes it easier to distribute and share code, since each class can be compiled and packaged separately.
+
+Abstraction
+  Data hiding
+  can be achieved abstraction using two ways
+  1. Abstract Class, Abstract methods
+  2. Interface
+
+  
+
+Abstract Class
+  If any class has abstract method that class must be abstract.
+  It is not compulsory that every abstract class has abstract methods.
+  If a class inherits abstract class then it is compulsory to implement all then abstract methods from abstract class
+  we cannot create an object of abstract class, but we can create its reference.
+
+Abstract methods
+  The method which doesn't have implementation must me abstract.
+  Abstract methods are meant to be overriden otherwise it will throw compile time error will be thrown
+
+Interfaces
+  It is a blueprint of a class. It specify what a class must do and not how.
+  Used to achieve Abstraction
+  It supports multiple inheritance
+  we can achieve multiple inheritance by extending one or more interfaces to a class
+  One interface and class can exetend more than one interface.
+  It can be used to achieve loose coupling
+  we cannot create the object of interface.
+  from 8th version of java we can implement defualt concrete methods and static method in interfaces.
+  from 9th version of java we can also implement private methods.
+  we must implement all the methods of the interface in a class, which extends the a that interface.
+  while overridding the methods of interface we should follow the rules of overriding.
+
+  Syntax:
+  interface interfaceName
+  {
+    Methods  //are automatically public and abstract
+    
+    fields //by default they are public static final
+  }
+
+Upcasting and Downcasting
+  Upcasting:
+  it means converting an instance of subclass into its parent type reference variable/object.
+  Creating reference variable of parent class and instance of child class
+  By doing this we can access the attributes and methods of parent class, but we cannot access the attributes of child class, we can only access the the overriden methods of child class. 
+
+  Example : Animal animal = new Dog();
+  Creating reference variable of parent class and instance of child class
+
+  Downcasting:
+  it means converting an instance of superclass into its child type reference variable/object
+
+  Example : Dog dog=(Dog)animal;
+
 
 Java executables 
   
@@ -558,6 +703,16 @@ Wrapper classes
 String class
     The String class in Java is used to represent a sequence of characters. Strings in Java are immutable, which means that once a string is created, it cannot be changed. When you modify a string, a new string is created in memory
 
+String Constant Pool
+  SCP is a memory area in heap
+  Till 1.6 version string pool was in method area 
+  Now its in Heap area
+
+  String s = new String("Siddhant");  -> creates 2 objects, one in heap(Siddhant) and one in SCP(Siddhant) it is created by JVM using a reference variable that is created automatically and it is never deleted by garbage collector.
+  String s = "Rahul";    -> creates only one object i.e in SCP(Rahul) 
+  There will be no same literals in SCP
+
+
 StringBuffer
     The StringBuffer class in Java is used to represent a mutable sequence of characters. Unlike strings, string buffers can be modified in-place without creating new objects
     Because string buffers are mutable, they are not thread-safe. This means that if multiple threads access the same string buffer object at the same time, there is a risk of the buffer being modified unexpectedly. To avoid this, you can use synchronization to ensure that only one thread can access the buffer at a time.
@@ -566,12 +721,33 @@ StringBuilder
     The StringBuilder class in Java is similar to the StringBuffer class, in that it is used to represent a mutable sequence of characters. However, unlike StringBuffer, StringBuilder is not thread-safe. This makes it faster and more efficient than StringBuffer, but also means that you need to be careful when using it in a multi-threaded environment.
     Because StringBuilder is not thread-safe, it should only be used in situations where you know that only one thread will be accessing the object at a time.
 
+Autoboxing and Unboxing
+  Autoboxing:
+  automatic conversion of premitive data type into object 
+
+  eg:
+  int x=5;
+  Integer j = Integer.valueOf(i);   // manual conversion of premitive data type into object 
+  Integer y = i;                    // autoboxing, in this automaticaly JVM writes Integer.valueOf(i)
+
+  Unboxing:
+  reverse operation, converting an Object back to primitive datatype.
+  
+  Eg:
+  Integer iobj = new Integer(100);
+  int i = iobj.intvalue();        //manual convertion an Object back to primitive datatype
+  int i = iobj;                   //unboxing, in this automaticaly JVM writes iobj.intvalue()
+  
+
+
+  
+
 Exception hierarchy
   diagram in imgage folder
 
 Exception Handling
 
-  Unchecked -> The exception that cannot be checked by compfiler. Program will compile but will terminate after exception if we don't use try catch or throws keyword.
+  Unchecked -> The exception that cannot be checked by compiler. Program will compile but will terminate after exception if we don't use try catch or throws keyword.
 
   Exceptions occur only in runtime.
 
@@ -593,7 +769,7 @@ Exception Handling
           conditions when finaly doesn't executes:
           System.exit() in try
           error in try block
-          exceptionin finaly itself
+          exception in finaly itself
 
   throw: used to create exception object by programmer directly to jvm without interferance of method in which exception occur.
          syntax -> throw new exceptionClassName("massage for exception ");
@@ -982,7 +1158,12 @@ Interthread communication
 
   notifyAll():
 
-  
+Reflections
+  It alows us to inspect and manipulate classes, interface, constructor, methods and fields at run time.
+  Reflection provides dynamic access to runtime information about classes through its API.
+  Its in java.lang.reflect
+  Basically there are some methods in "Class" class by which we can get name, methods, fields, parent class.
+  we can also use it to change the private final fields of a class(by doing the field.accessible(true))
 
 
 
