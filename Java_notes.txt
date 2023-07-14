@@ -454,6 +454,11 @@ Composition:
 
 Can a class be static ?
   In Java, a class can be declared as static only if it is an inner class. An inner class is a class that is defined within another class.
+  An inner class can also be inside a method which is called local inner class which is only accessible inside the method in which it is declared.
+  3 types of inner class
+    Non Static
+    Static
+    Local inner class
   reason to make inner class static
     To make it independent of its outer class instance.
     To allow it to be used as a regular top-level class.
@@ -792,6 +797,17 @@ Exception propagation
 
 serialization
   Serialization is the process of converting an object into a stream of bytes, which can then be stored or transmitted over a network. Deserialization is the reverse process of reconstructing the object from the serialized bytes.
+
+  Conditions for serialization
+    The class should impliment serializable interface which is marker interface.
+    All fields should be serializable. If a field is not serializable is should be marked transient.
+    field should not be static.
+
+  for serialization ObjectOutputStream which consist of method "writeObject" 
+  for deserialization ObjectInputStream which consist of method "readObject"
+
+  The file should be .ser extension in which we are going to store byte data 
+
   In Java, the Serializable interface is used to mark a class as serializable. When an object of a serializable class is serialized, its instance variables are written to a stream in a specific order, along with some metadata that identifies the class and its version. The resulting stream of bytes can be stored in a file or transmitted over a network.
 
 deserialization
@@ -1038,7 +1054,7 @@ Sleep()
   This method suspends a currently executing thread for specified time in milliseconds(0-999999).
   should be written in try block.
   Syntax:
-  ex: currentT hread.sleep(1000);
+  ex: currentThread.sleep(1000);
 
   Prototypes: 
   1) public static native void sleep(long millisec) throws Interruptedxception  -> written in another language  
@@ -1164,6 +1180,7 @@ Reflections
   Its in java.lang.reflect
   Basically there are some methods in "Class" class by which we can get name, methods, fields, parent class.
   we can also use it to change the private final fields of a class(by doing the field.accessible(true))
+  refer program 
 
 
 
