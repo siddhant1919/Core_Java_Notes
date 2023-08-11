@@ -130,7 +130,6 @@ Structure of class
 
 Java Variables
 
-  A variable is a container which holds the value while the Java program is executed. A variable is assigned with a data type.
 
   Eg: int data=50;//Here data is variable  
 
@@ -1066,7 +1065,7 @@ yield()
   Thread provides the hint to the thread-schedular, then it depends on thread-schedular to accept on ignore the hint.
   Output may vary
   Yields control back to other waiting or runnable threads if any exist within its own thread group
-  
+
   Syntax:
   ex: Thread.yield();
 
@@ -1088,7 +1087,7 @@ join()
 
 Thread interrupt in java
   Used to to interrupt an executing thread.
-  interrupt() method will only workds when the thread is in sleeping or waiting state(sleep() or wait()).
+  interrupt() method will only works when the thread is in sleeping or waiting state(sleep() or wait()).
   If a thread is not in sleeping or waiting state then calling the interrupt() method will perform normal behavior.
   To check whether the thread has been interrupted use interruped() method of Thread class.
   interrupt() throws InterruptedException
@@ -1115,7 +1114,7 @@ Thread interrupt in java
   1) public boolean isinterupted()
 
 Synchronization
-  It is a process through which we control the accessiblity os multiple thread to a perticular shared resource
+  It is a process through which we control the accessiblity of multiple thread to a particular shared resource
   Synchronization allows one object (thread/process etc.) access a resource at any given time by ensuring mutual exclusion between threads accessing same resources.
   Problems if we don't use synchronization:
   - Data corruption/inconsistency
@@ -1162,9 +1161,10 @@ Static synchronization
 
 Interthread communication
   Inter thread communication is a mechanism in which a thread releases the lock and enters into paused state and another thread acquires the lock and continue to execute.
+  These methods are from Object class and not Thread class. 
   methods:
   wait():
-  It suspends execution until another thread invokes the notify()ornotifyall()method on the current object (the calling thread).
+  It suspends execution until another thread invokes the notify() or notifyall()method on the current object (the calling thread).
 
   notify():
   

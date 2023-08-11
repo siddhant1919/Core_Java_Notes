@@ -1,0 +1,1062 @@
+Servlet:
+
+	Servlet is interface is implemented by FacesServlet, GenericServlet, HttpServlet classes
+
+	Classes heirarchy of servlets
+
+	deployment descriptor = web.xml
+		Elements:
+			web-app Element:
+			This is the root element of the web.xml file.
+			It defines the namespace, schema location, and the version of the Java EE specification being used.
+
+			servlet Element:
+			Contains configuration for a specific servlet.
+			servlet-name: A unique name for the servlet configuration.
+			servlet-class: The fully qualified class name of the servlet implementation.
+
+			servlet-mapping Element:
+			Maps a servlet to a URL pattern so that the servlet can handle incoming requests.
+			servlet-name: Refers to the servlet-name defined in the servlet element.
+			url-pattern: The URL pattern that triggers the servlet's execution.
+
+			welcome-file-list Element:
+			Specifies a list of default pages that will be displayed if a user accesses the web application's root URL.
+			welcome-file: Specifies the default file (e.g., index.html) to display.
+
+			filter:
+			filter-mapping:
+			listener:
+
+	Methods of Servlet:
+	1) destroy(): This method is called when the servlet is being taken out of service. It's used to clean up resources and perform finalization tasks.
+	2) getServletConfig(): This method returns the ServletConfig object that holds configuration information for the servlet.
+	3) getServletInfo(): This method returns a string describing the servlet.
+	4) init(ServletConfig config): This method is called when the servlet is initialized. It's typically used to perform setup tasks that need to happen only once when the servlet starts.
+	5) service(ServletRequest req, ServletResponse res): This method is where the actual processing of client requests happens. You override this method to provide the logic for handling incoming requests and generating responses.
+
+	Servlet Lifecycle:
+		1) loading: when server is started, servlet class is loaded in the memory and servlet object created.
+		2) Initialization: init()
+		Servlet object will be initialized by init() method
+		3) Request handling: service()
+		It will handle or serve the client request. If request is get doGet() method will be called, If request is post doPost() method will be called In this phase service() method will be invoked. Every new thread will be created for new request.
+		4) Destroy: destroy()
+		When the server is shut down destroy() method will be executed and servlet object will be deleted.
+		Loading and Initialization will only get execute once.
+		.class file gets load into server.
+
+	Java Servlet Container:
+		A Java Servlet container, also known as a web container or servlet engine, is a software component responsible for managing the lifecycle of servlets and JavaServer Pages (JSP) in a Java-based web application. 
+		It provides the runtime environment for servlets to execute, handles incoming client requests, and manages their interactions with the servlets.
+		Role:
+		Lifecycle Management:
+		Request Handling:
+		Multithreading and Concurrency:
+		Session Management:
+		Security and Access Control:
+		URL Mapping and Routing:
+		Error Handling:
+		Resource Management:
+		Deployment and Configuration:
+		Containers read the web application's deployment descriptor (typically web.xml or annotations) to understand how servlets, filters, and other components are configured. They manage the deployment and undeployment of web applications.
+		Integration with Web Server:
+		A servlet container is often integrated with a web server (e.g., Apache HTTP Server) to handle servlet requests. The web server might forward requests to the container using protocols like AJP (Apache JServ Protocol) or proxying.
+	
+	Deployment:
+
+	URL Patterns
+		* (Asterisk): Example: /somepath/* matches requests like /somepath/foo, /somepath/bar, etc.
+		/ (Path Separator): Example: /path1/path2/ matches requests like /path1/path2/something.
+	
+	Wildcard Mappings:
+		Wildcard mappings are used to map multiple servlets to a single URL pattern. They are useful when you want to have different servlets handle different aspects of a URL pattern. 
+		Wildcard mappings use a URL pattern that ends with an asterisk * (e.g., /wildcard/*).
+
+	Request dispatching and Redirecting
+
+	Request Dispatching:
+
+		Request dispatching involves forwarding a request from one servlet to another resource, such as another servlet, a JSP page, or even a static resource like an HTML file. This allows you to chain servlets and reuse components, enhancing code modularity and organization.
+
+		**Usage Scenarios:**
+		- **MVC Architecture:** Dispatching allows you to separate concerns by having different servlets handle specific tasks, such as processing input data, performing business logic, and generating views.
+
+		**Example of Request Dispatching:**
+
+		Suppose you have a servlet that processes user login information, and upon successful login, you want to display a welcome message using a JSP page:
+
+		```java
+		// Inside LoginServlet
+		if (loginSuccessful) {
+			request.setAttribute("username", username);
+			RequestDispatcher dispatcher = request.getRequestDispatcher("/welcome.jsp");
+			dispatcher.forward(request, response);
+		}
+		```
+
+	Redirecting:
+		Redirecting is the process of sending an HTTP redirect response to the client's browser. This response instructs the browser to issue a new request to a different URL. 
+		The client's browser then makes a new request, and the server responds accordingly. 
+		Redirecting is useful when you want to direct users to a different resource or URL.
+
+		Usage Scenarios:
+		- Post-Redirect-Get Pattern: Used to avoid duplicate form submissions and improve user experience.
+		- URL Changes: When you want to provide a friendlier URL to users or when moving resources.
+
+		Example of Redirecting:
+
+		After successfully processing a form submission, you want to redirect the user to a confirmation page:
+
+		```java
+		// Inside FormSubmissionServlet
+		if (formIsValid) {
+			response.sendRedirect("confirmation.jsp");
+		} else {
+			response.sendRedirect("error.jsp");
+		}
+		```
+
+	Key Differences:
+
+		1. Response Flow:
+		- Request dispatching internally forwards the request to another resource without involving the client's browser.
+		- Redirecting sends an HTTP response back to the client's browser, instructing it to make a new request to the specified URL.
+
+		2. URL Displayed:
+		- With request dispatching, the URL displayed in the browser remains the same.
+		- With redirecting, the URL displayed in the browser changes to the redirected URL.
+
+		3. Data Sharing:
+		- With request dispatching, you can share data directly through request attributes.
+		- With redirecting, you can share data between the servlets using request parameters, session attributes, or other mechanisms.
+
+	Servlet Filters:
+
+		Servlet Filters are powerful components in the Java Servlet API that allow you to intercept and process requests and responses as they flow through the servlet container. 
+		They provide a way to implement cross-cutting concerns such as logging, security, authentication, data transformation, and more. 
+		Filters are defined in the deployment descriptor (`web.xml`) or through annotations and are executed before or after the target servlet.
+
+		Key Characteristics of Servlet Filters:
+		1. Filters are not tied to a specific servlet; they can be applied to multiple servlets or even static resources.
+		2. They can modify request parameters, headers, or bodies before they reach the servlet.
+		3. They can modify response parameters, headers, or bodies before they are sent to the client.
+		4. Filters can short-circuit the request/response chain and return a response without reaching the target servlet.
+
+		Example Use Cases:
+		- Authentication and Authorization: Checking if the user is authenticated before granting access.
+		- Logging: Recording information about incoming requests and outgoing responses.
+		- Data Compression: Compressing response content to reduce bandwidth usage.
+		- Encryption and Decryption: Securing sensitive data before sending or after receiving.
+		- Transaction Management: Starting, committing, or rolling back transactions.
+		- Content Filtering: Filtering or modifying content based on certain criteria.
+
+		Creating a Servlet Filter:
+
+		Here's how you might create a simple logging filter that logs information about incoming requests:
+
+		1. Create the Filter Class:
+
+		```java
+		import java.io.IOException;
+		import javax.servlet.Filter;
+		import javax.servlet.FilterChain;
+		import javax.servlet.FilterConfig;
+		import javax.servlet.ServletException;
+		import javax.servlet.ServletRequest;
+		import javax.servlet.ServletResponse;
+
+		public class LoggingFilter implements Filter {
+			public void init(FilterConfig config) throws ServletException {
+				// Initialization code (if needed)
+			}
+
+			public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+					throws IOException, ServletException {
+				// Log information about the incoming request
+				System.out.println("Request received: " + request.getRemoteAddr() + " - " + request.getRequestURI());
+
+				// Continue the request/response chain
+				chain.doFilter(request, response);
+
+				// Log information about the outgoing response
+				System.out.println("Response sent: " + response.getContentType());
+			}
+
+			public void destroy() {
+				// Cleanup code (if needed)
+			}
+		}
+		```
+
+		2. Configure the Filter:
+
+		In `web.xml`, you need to define the filter and specify the URL pattern it should be applied to.
+
+		```xml
+		<filter>
+			<filter-name>LoggingFilter</filter-name>
+			<filter-class>com.example.LoggingFilter</filter-class>
+		</filter>
+		<filter-mapping>
+			<filter-name>LoggingFilter</filter-name>
+			<url-pattern>/*</url-pattern>
+		</filter-mapping>
+		```
+
+		Applying the Filter:
+		In the above example, the `LoggingFilter` will intercept all requests (`/*`) and log information about them before and after they reach the target servlet or resource.
+		Remember that filters can be combined to achieve complex request and response processing pipelines, making them a versatile tool for implementing various functionalities in your servlet-based applications.
+
+		Filter chaining:
+		Filter chaining in servlets refers to the practice of applying multiple filters to a single request before it reaches the target servlet or resource. This allows you to create a pipeline of filters, each responsible for a specific aspect of request and response processing. 
+		The filters are executed in the order they are defined in the deployment descriptor (web.xml) or through annotations.
+
+	Servlet listners:
+		Servlet Listeners are components in the Java Servlet API that allow you to receive notifications about certain events occurring in a web application. 
+		These events can include the creation, destruction, and modification of various objects in the servlet context, session, and request scope. 
+		Servlet Listeners enable you to respond to these events and perform actions accordingly.
+
+		There are three main types of Servlet Listeners:
+		ServletContextListener: Initializing resources when the application starts or cleaning up resources when it's shutting down.
+		HttpSessionListener: Monitoring user sessions to perform tasks like session tracking and resource management.
+		ServletRequestListener: Logging request-related information for analysis or debugging.
+
+	Servlet annotations
+		Servlet annotations provide a more streamlined and modern way to define servlet-related configurations directly in your servlet classes, rather than configuring them in the web.xml deployment descriptor. 
+		Annotations make the code more concise and easier to read. Here's how you can use annotations in servlets.
+
+		eg: @WebServlet(name = "RegistrationServlet", urlPatterns = "/register")
+		@WebServlet:
+		This annotation is used to define servlet-related configurations.
+		name: Specifies the name of the servlet. (Optional)
+		urlPatterns: Specifies an array of URL patterns to which the servlet should respond.
+		You can use other attributes like loadOnStartup, asyncSupported, etc.
+
+		types of annotation:
+		In Java servlets, annotations provide a way to configure and customize various aspects of servlets and related components without the need for explicit configuration in the `web.xml` deployment descriptor. 
+		Here are some important annotations used in servlet development:
+
+			1. `@WebServlet`:
+			- Used to define servlet configuration, such as name, URL patterns, and more.
+			- Maps a servlet class to one or more URL patterns.
+			- Example:
+				```java
+				@WebServlet(name = "MyServlet", urlPatterns = {"/path1", "/path2"})
+				public class MyServlet extends HttpServlet { ... }
+				```
+
+			2. `@WebFilter`:
+			- Specifies that a class is a filter and provides filter configuration.
+			- Allows you to define the URL patterns that the filter should apply to.
+			- Example:
+				```java
+				@WebFilter(filterName = "MyFilter", urlPatterns = {"/path1/*", "/path2/*"})
+				public class MyFilter implements Filter { ... }
+				```
+
+			3. `@WebListener`:
+			- Marks a class as a listener for various lifecycle events in the web application.
+			- Commonly used for classes that implement `ServletContextListener`, `HttpSessionListener`, and `ServletRequestListener`.
+			- Example:
+				```java
+				@WebListener
+				public class MyContextListener implements ServletContextListener { ... }
+				```
+
+			4. `@HttpMethod`:
+			- Used to associate a servlet method with a specific HTTP request method.
+			- Allows you to define custom methods for handling specific HTTP methods like GET, POST, PUT, DELETE, etc.
+			- Example:
+				```java
+				@WebServlet("/path")
+				public class MyServlet extends HttpServlet {
+					@HttpMethod("GET")
+					protected void doGet(HttpServletRequest request, HttpServletResponse response) { ... }
+				}
+				```
+
+			5. `@MultipartConfig`:
+			- Configures a servlet to handle multipart/form-data requests for file loads.
+			- Specifies file size limits, location to store uploaded files, and more.
+			- Example:
+				```java
+				@WebServlet("/upload")
+				@MultipartConfig(fileSizeThreshold = 1024 * 1024, maxFileSize = 5 * 1024 * 1024, maxRequestSize = 20 * 1024 * 1024)
+				public class UploadServlet extends HttpServlet { ... }
+				```
+
+			6. `@ServletSecurity`:
+			- Specifies security constraints for a servlet using declarative security.
+			- Defines HTTP methods, transport guarantees, and roles allowed to access the servlet.
+			- Example:
+				```java
+				@WebServlet("/secure")
+				@ServletSecurity(@HttpConstraint(transportGuarantee = TransportGuarantee.CONFIDENTIAL, rolesAllowed = {"ADMIN"}))
+				public class SecureServlet extends HttpServlet { ... }
+				```
+
+			These annotations enhance the expressiveness and readability of servlet code while making it more closely aligned with the functionality they provide. 
+			They are part of the Java EE standard and are supported by servlet containers that implement the Java Servlet API specifications.
+	
+	Asynchronous Processing:
+		Asynchronous processing in servlets allows a web application to handle incoming requests in a non-blocking manner, which can lead to improved scalability and responsiveness. 
+		Traditional synchronous processing waits for a request to be fully processed before responding, potentially leading to resource inefficiencies. 
+		Asynchronous processing allows a servlet to start processing a request and then release the associated thread, making it available to handle other requests in the meantime.
+
+	Servlet Security:
+		Servlet security is a critical aspect of building secure web applications. 
+		Servlets provide mechanisms for enforcing security constraints, authentication, and authorization to control access to specific resources and functionalities within your application. 
+		Servlet security is usually configured using deployment descriptors (web.xml) or annotations.
+		
+		Key Security Concepts:
+
+		Authentication: Verifying the identity of a user, often with a username and password, before granting access.
+		Authorization: Determining what actions or resources a user is allowed to access after authentication.
+		Security Constraints: Rules that define which users or roles can access specific resources or URL patterns.
+		Transport Security: Ensuring that data transmitted between the client and server is encrypted to prevent eavesdropping.
+
+		Using web.xml for Security Configuration:
+
+			Define Security Roles:
+			In web.xml, you define roles that users can have:
+			
+			<security-role>
+				<role-name>ADMIN</role-name>
+			</security-role>
+
+			Map Roles to Users:
+			You can map roles to users or groups in the deployment descriptor:
+			
+			<security-constraint>
+				<web-resource-collection>
+					<web-resource-name>Protected Resources</web-resource-name>
+					<url-pattern>/secure/*</url-pattern>
+				</web-resource-collection>
+				<auth-constraint>
+					<role-name>ADMIN</role-name>
+				</auth-constraint>
+			</security-constraint>
+
+			Enable Security in Servlet Mapping:
+			Configure security constraints in the servlet mapping:
+			
+			<servlet-mapping>
+				<servlet-name>ProtectedServlet</servlet-name>
+				<url-pattern>/secure/data</url-pattern>
+			</servlet-mapping>
+
+
+		Using Annotations for Security Configuration:
+
+			Create Servlet:
+			
+			@WebServlet("/secure/data")
+			public class ProtectedServlet extends HttpServlet {
+				// Servlet logic
+			}
+
+			Define Security Constraints with Annotations:
+			
+			@WebServlet("/secure/data")
+			@ServletSecurity(@HttpConstraint(rolesAllowed = {"ADMIN"}))
+			public class ProtectedServlet extends HttpServlet {
+				// Servlet logic
+			}
+			In both cases, only users with the "ADMIN" role can access the /secure/data URL. 
+			Users without this role will be denied access and receive an authentication challenge.
+
+	Ensuring Thread Safety:
+		To make servlets thread-safe, you can use various techniques, such as synchronization or using thread-safe data structures. 
+		Here's an improved version of the CounterServlet using synchronization:
+
+		@WebServlet("/counter")
+		public class SynchronizedCounterServlet extends HttpServlet {
+			private int counter = 0;
+
+			protected synchronized void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+				counter++;
+				response.getWriter().write("Counter value: " + counter);
+			}
+		}
+	
+		Concurrency Considerations:
+		Minimize Synchronization: Excessive use of synchronization can lead to performance bottlenecks. Consider using thread-safe data structures and techniques that minimize contention.
+		Use Thread Pools: Servlet containers often use thread pools to manage threads. Thread pools allow better control over resource usage and reduce the overhead of thread creation and destruction.
+		Asynchronous Processing: Leveraging asynchronous processing can help mitigate concurrency issues. When tasks are non-blocking, threads can be released to handle other requests, improving scalability.
+
+		Example
+		@WebServlet("/asyncCounter")
+		public class AsyncCounterServlet extends HttpServlet {
+			private AtomicInteger counter = new AtomicInteger(0);
+
+			protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+				AsyncContext asyncContext = request.startAsync();
+				asyncContext.start(() -> {
+					counter.incrementAndGet();
+					try {
+						Thread.sleep(1000); // Simulating some processing time
+						PrintWriter out = asyncContext.getResponse().getWriter();
+						out.write("Counter value (async): " + counter);
+						asyncContext.complete();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				});
+			}
+		}
+
+	Error Handling:
+		Error handling in servlets involves managing exceptions and providing appropriate error responses to clients when something goes wrong during request processing. 
+		This ensures that users receive meaningful feedback instead of encountering generic error pages.
+
+		Key Concepts:
+
+		<error-page> in web.xml: Allows you to define error pages for specific HTTP error codes or exceptions.
+
+		@WebServlet with initErrorPage: Using annotations to define an initialization error page for a servlet.
+		Example of Error Handling in Servlets:
+		Suppose you have a servlet that performs some complex calculations and might encounter a CalculationException in case of an error.
+
+		@WebServlet("/calculate")
+		public class CalculationServlet extends HttpServlet {
+			protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+				try {
+					int result = performCalculation(request);
+					response.getWriter().write("Result: " + result);
+				} catch (CalculationException e) {
+					response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Calculation failed: " + e.getMessage());
+				}
+			}
+
+			private int performCalculation(HttpServletRequest request) throws CalculationException {
+				// Perform calculations...
+				// If an error occurs, throw a CalculationException
+			}
+		}
+
+		In this example, when an error occurs during the calculation, a CalculationException is thrown. 
+		The doGet method catches this exception and sends an appropriate error response with a status code of 500 (Internal Server Error) and a custom error message.
+
+		Configuring Error Pages:
+
+		You can configure error pages in the web.xml deployment descriptor to display custom error messages or pages for specific error codes or exceptions.
+
+		<error-page>
+			<error-code>500</error-code>
+			<location>/errorpages/internalServerError.jsp</location>
+		</error-page>
+		<error-page>
+			<exception-type>com.example.CalculationException</exception-type>
+			<location>/errorpages/calculationError.jsp</location>
+		</error-page>
+
+		In this configuration, if a CalculationException occurs, the user will be directed to the calculationError.jsp error page. 
+		If a 500 error (Internal Server Error) occurs, the user will be directed to the internalServerError.jsp error page.
+
+		Using @WebServlet for Initialization Error Pages:
+
+		You can also use the @WebServlet annotation to specify an initialization error page for the servlet using the initErrorPage attribute.
+		@WebServlet(value = "/example", initErrorPage = "/errorpages/initError.jsp")
+		public class ExampleServlet extends HttpServlet {
+			// Servlet logic
+		}
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------
+JSP(Java server pages)
+	avaServer Pages (JSP) is a technology used in web development to create dynamic web content by embedding Java code within HTML pages. 
+	It's a part of the Java EE (Enterprise Edition) platform, now known as Jakarta EE, which is used for building enterprise-level applications. 
+	JSPs play a crucial role in web applications by allowing developers to separate the presentation logic from the business logic, resulting in a more organized and maintainable codebase.
+	
+	JSP structure
+		<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+		<!DOCTYPE html>
+		<html>
+		<head>
+			<title>My JSP Page</title>
+		</head>
+		<body>
+			<h1>Hello, JSP!</h1>
+			<p>This is a simple JSP example.</p>
+		</body>
+		</html>
+
+	JSP syntax
+		<% %> is called sriplet is transfered into service function in servlet.
+
+		if we want to write something outside service function we write in <%! %> (which is called declarative, to instance variables)
+
+		if we want to import package in jsp we write into <%@ page import = "java.util.Date", "java.sql.*" %> (which is called directive)
+
+		using <%= ... %> will print ... (it is called expression)
+
+		 Action Tags <jsp:include page="header.jsp" />
+
+	JSP Lifecycle:
+		1) Translation: JSP gets converted into Servlet
+		2) compilation: servlet gets converted into .class
+		1) loading and instantiation : when server is started, servlet class is loaded in the memory and servlet object created.
+		2) Initialization: jspInit()
+		Servlet object will be initialized by jspInit() method
+		3) Request handling: _jspService()
+		It will handle or serve the client request. If request is get doGet() method will be called, If request is post doPost() method will be called In this phase service() method will be invoked. Every new thread will be created for new request.
+		4) Destroy: jspDestroy()
+		When the server is shut down destroy() method will be executed and servlet object will be deleted.
+
+	implicit and explicit jsp object
+		Implicit objects are objects that are already created in jsp, and we just have to use it.
+		Object                 Type
+		1) out                 JspWriter
+		2) request			   HttpServletRequest
+		3) response			   HttpServletResponse
+		4) session             HttpSession
+		5) config		       ServletConfig
+		6) application		   ServletContext 
+		7) pageContext         PageContext
+		8) page                Object
+		9) exception           Throwable
+	
+	1. JSP Page Context:
+
+		The JSP Page Context refers to the context within which a JSP page is executed. 
+		It provides access to various objects and methods that allow you to interact with the environment in which the JSP is running. 
+		The pageContext object is an implicit object available within any JSP page. It provides access to several important scopes, including pageScope, requestScope, sessionScope, and applicationScope.
+
+	2. Page Scope:
+		Page Scope refers to the visibility and lifetime of variables and objects within a single JSP page. 
+		Variables stored in the Page Scope are accessible only within that specific JSP page. 
+		The Page Scope is the default scope for JSP scripting elements like scriptlets, expressions, and declarations. 
+		Variables in Page Scope are created when the JSP page is invoked and are destroyed when the processing of the page is complete.
+	
+
+	Expression Language
+		1. Accessing Variables:
+			In JSP, variables can be accessed using EL by using ${} syntax. 
+			The variables can be from various scopes like page scope, request scope, session scope, and application scope.
+			<!-- Assuming a variable named "username" is in request scope -->
+			<p>Welcome, ${username}!</p>
+		2. Accessing Properties:
+			EL can directly access properties of objects using dot notation.
+			Assuming you have a JavaBean named Person with properties firstName and lastName:
+
+			<!-- Assuming person is a Person object in request scope -->
+			<p>Name: ${person.firstName} ${person.lastName}</p>
+
+		3. Arithmetic Operations:
+			EL supports basic arithmetic operations within expressions.
+			<p>Sum: ${5 + 3}</p>
+
+		4. Accessing List and Map Elements:
+			EL can access elements of lists and maps using square brackets.
+			Assuming you have a list named items and a map named userMap in request scope:
+
+			<p>First item: ${items[0]}</p>
+			<p>User's age: ${userMap['age']}</p>
+
+		5. Calling Methods:
+			EL allows you to call methods on objects.
+			Assuming you have a method calculateTotal() in a JavaBean named Cart:
+		
+			<p>Total price: ${cart.calculateTotal()}</p>
+
+		6. Conditional Statements:
+		EL supports conditional expressions.
+
+			<p>${(age >= 18) ? 'Adult' : 'Minor'}</p>
+
+	JSP directives 
+		They are used to control various aspects of the page's behavior, such as page settings, error handling, and importing Java classes. 
+		There are three main types of JSP directives: page, include, and taglib. Here's an explanation of each type with examples:
+
+		1. Page Directives (<%@ page ... %>):
+			Page directives are used to set page-level attributes and configuration settings. They are typically placed at the beginning of a JSP file before any HTML content. 
+			Page directives influence how the JSP container processes the entire page.
+
+			<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+		
+		2. Include Directives (<%@ include ... %>):
+			Include directives are used to include the content of an external file into the current JSP page during the translation phase. 
+			This is similar to copying and pasting the content of one file into another.
+
+			<%@ include file="header-content.jsp" %>
+
+		Taglib Directives (<%@ taglib ... %>):
+			Taglib directives are used to declare custom tag libraries that provide custom tags and tag handlers for JSP pages. 
+			These custom tags encapsulate complex functionality and allow developers to use higher-level abstractions in their JSP pages.
+
+			<%@ taglib prefix="custom" uri="/WEB-INF/custom-tags" %>
+
+			<body>
+				<h1>Custom Tag Example</h1>
+				<custom:customTag attribute1="value1" attribute2="value2" />
+			</body>
+
+	JSP Actions
+		JSP actions are XML-like tags that enable you to perform dynamic tasks in JavaServer Pages (JSP) without embedding Java code directly within the page. 
+		These actions provide a more structured and modular approach to building JSP pages. 
+		There are several types of JSP actions that serve different purposes. 
+
+		1. <jsp:include> Action:
+			The <jsp:include> action is used to include the content of another resource (JSP page, HTML file, etc.) within the current JSP page. 
+			This action is processed during runtime, and the included content is fetched and inserted into the page.
+
+		2. <jsp:forward> Action:
+			The <jsp:forward> action is used to forward the request to another resource (JSP page, servlet, etc.) on the server. 
+			It allows you to redirect the user's browser to a different URL.
+
+		3. <jsp:param> Action:
+			The <jsp:param> action is used within <jsp:include> and <jsp:forward> actions to pass parameters to the included/forwarded resource. 
+			These parameters can be accessed by the target resource using request parameters.
+
+		4. Custom Tags and Tag Libraries:
+			While not technically "actions," custom tags and tag libraries also provide an organized way to encapsulate and reuse functionality within JSP pages. 
+			These custom tags are similar to HTML tags but can execute more complex actions.
+
+
+	JSTL
+	Custom Tag Development
+
+	JSP Error Handling
+		JSP error handling involves managing and handling exceptions that can occur during the execution of a JavaServer Pages (JSP) page. 
+		Proper error handling helps improve the user experience and provides developers with information to diagnose and resolve issues. 
+		JSP provides mechanisms to catch and handle errors using error pages and the <%@ page isErrorPage="true" %> directive.
+		
+		1. Defining an Error Page:
+
+		An error page is a JSP page that is displayed when an exception occurs during the execution of another JSP page. You can define an error page using the <%@ page isErrorPage="true" %> directive at the top of the JSP file. 
+		This directive marks the page as an error page and allows you to access the exception object using the exception implicit object.
+
+	JSP Performance and Best Practices
+	JSP Design Patterns
+		Design patterns are reusable solutions to common problems that developers face when designing and building software applications.
+		These patterns provide best practices and guidelines for structuring code, promoting maintainability, flexibility, and readability. 
+		JSP (JavaServer Pages) also benefits from various design patterns.
+		Few Design Patterns:
+			 1) Model-View-Controller (MVC) Pattern:
+			 2) Front Controller Pattern:
+			 3) View Helper Pattern:
+			 4) Composite View Pattern:
+			 5) Data Access Object (DAO) Pattern:
+			 6) Template Method Pattern:
+
+	JSP Security
+	JSP Fragments and Tag Files
+		JSP Fragments:
+			JSP fragments are portions of JSP code that can be reused across multiple JSP pages. 
+			They are typically used to encapsulate sections of the page that serve a specific purpose, like headers, footers, navigation menus, or even complex logic. 
+			Fragments are included in JSP pages using the <jsp:include> directive or the <%@ include %> directive.
+
+			Let's say you have a header fragment named header.jspf:
+			<!-- header.jspf -->
+			<div class="header">
+					<h1>Welcome to our website!</h1>
+					<p>This is the header section.</p>
+			</div>
+
+			You can include this fragment in different JSP pages using the <jsp:include> directive:
+			<!-- index.jsp -->
+			<!DOCTYPE html>
+			<html>
+			<head>
+					<title>Home</title>
+			</head>
+			<body>
+					<jsp:include page="header.jspf" />
+					<!-- Rest of the page content -->
+			</body>
+			</html>
+
+		Tag Files:
+			Tag files are more powerful than fragments and allow you to create custom JSP tags with associated logic and content. 
+			They are a way to encapsulate complex functionality into reusable components. 
+			Tag files have the extension .tag or .tagx.
+			Let's say you want to create a custom tag for displaying a user's profile:
+			<!-- userProfile.tag -->
+			<%@ tag language="java" body-content="empty" %>
+			<%@ attribute name="username" required="true" type="java.lang.String" %>
+
+			<div class="user-profile">
+					<h2>User Profile</h2>
+					<p>Username: ${username}</p>
+					<!-- Additional profile information and logic can be added here -->
+			</div>
+
+			You can use this custom tag in your JSP pages like this:
+
+				<!-- index.jsp -->
+				<%@ taglib prefix="custom" tagdir="/WEB-INF/tags" %>
+				<!DOCTYPE html>
+				<html>
+				<head>
+						<title>Home</title>
+				</head>
+				<body>
+						<custom:userProfile username="john_doe" />
+						<!-- Rest of the page content -->
+				</body>
+				</html>
+
+			In this example, the custom tag userProfile from the userProfile.tag file is included in the index.jsp page.
+
+
+
+
+
+
+
+	JSP and Servlet Interaction
+		JSP (JavaServer Pages) and Servlets are both technologies used for building web applications in Java. 
+		They often work together to create dynamic web content. Let's explore how JSP and Servlets interact with each other using an example.
+
+		Scenario:
+		Suppose you want to create a simple web application that takes a user's name through a form, processes it using a Servlet, and then displays a personalized greeting using a JSP page.
+
+		Step-by-Step Interaction:
+
+			User submits a form:
+				The user accesses a web page containing a form where they can enter their name. When the form is submitted, a request is sent to the server.
+
+			Servlet processes the request:
+				A Servlet is responsible for handling the request. 
+				It extracts the user's name from the request parameters, processes it, and prepares the data to be displayed in the JSP page.
+
+				// GreetingServlet.java
+				public class GreetingServlet extends HttpServlet {
+						protected void doPost(HttpServletRequest request, HttpServletResponse response)
+										throws ServletException, IOException {
+								String username = request.getParameter("username");
+								String greetingMessage = "Hello, " + username + "!";
+								
+								request.setAttribute("greeting", greetingMessage);
+								RequestDispatcher dispatcher = request.getRequestDispatcher("greeting.jsp");
+								dispatcher.forward(request, response);
+						}
+				}
+
+			Servlet forwards to JSP:
+				The Servlet uses the RequestDispatcher to forward the processed data (in this case, the greeting message) and the request object to the JSP page for rendering.
+
+			JSP processes data and generates content:
+				The JSP page receives the forwarded request and data from the Servlet. It uses Java code and JSP tags to process the data and generate HTML content.
+				<!-- greeting.jsp -->
+				<!DOCTYPE html>
+				<html>
+				<head>
+						<title>Greeting Page</title>
+				</head>
+				<body>
+						<h1>Greeting Page</h1>
+						<p>${greeting}</p>
+				</body>
+				</html>
+
+			
+			SP generates HTML response:
+				The JSP page generates an HTML response containing the personalized greeting message. This response is sent back to the user's browser.
+
+			Summary:
+				In this interaction, the Servlet handles the request, processes the data, and forwards the data to the JSP for rendering. The JSP then generates the HTML response with the processed data. This combination of Servlets and JSP allows you to separate business logic (in the Servlet) from presentation logic (in the JSP), promoting better code organization and maintainability in your Java web application.
+
+
+	JSP and AJAX
+		
+	JSP and Internationalization:
+		Internationalization (often abbreviated as i18n) is the process of designing and developing software applications in a way that allows them to be easily adapted for use in different languages, cultures, and regions. 
+		JavaServer Pages (JSP) can be internationalized to create applications that are accessible and user-friendly for people around the world. 
+		This involves separating text and locale-sensitive components from the code and allowing them to be easily replaced with translations for different languages.
+
+    JSP Deployment:
+		mostly same as servlet.
+
+	JSP 2.0+ Features (Java EE 5+):
+
+	JSP Container 
+
+
+	Web Container 
+
+
+	When you click onsubmit button what type o data u are passing(we are sending post request), so ut will go to web.xml and will search url pattern which is add, then it will go to servlet class, then the control will go to service method. 
+	Now depend upon your request it will go to doPost or doGet
+
+	to move from one servlet to other servlet we can use servlet dispatcher or redirect
+		when we use dispatcher client(browser doesn't know where we are redirecting)
+		when we use sendRedirect client(browser knows where we are redirecting)
+
+	to send data from one servlet to another we can use session management(it has two methods session and cookies)
+
+	
+
+	JSP  Directives
+	@page:
+		<%@page attribute="value" attribute="value"  ...%>
+	@include:
+		<%@ include file="filename" %>
+		<%@ include file=header.jsp %>
+		
+	@taglib:
+		<%@ taglib uri="uri" prefix="fx" %>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+TCP:
+
+UDP:
+
+HTTP:
+	Communication between web servers and clients
+	HTTP Requests / Responses
+	HTTP at core is completely stateless
+	Every req is completely independent
+	by default it run on port 80
+
+	Request Methods:
+	Get: retrieve data from server
+	Post: submit data to server
+	Put: Update data already on server
+	Delete: Deletes data from the server
+	
+	Request headers
+	
+
+HTTPS:
+	Data sent is encrypted
+	by default it run on port 443
+	
+DNS:
+	domain name system
+	resolves host name to ip address
+	steps:
+	1) talk to your local dns resolver in your computer
+	2) 
+	
+session:
+	we save everything on server side
+	By doing this: 
+	HttpSession session = request.getSession();
+	session.setAttribute("username", uname);
+	we can create an session object and store username = deepak and check for all pages.
+	every session object has unique session id for every client that gets checked while a page request.
+	
+	https://www.youtube.com/watch?v=6ASoqqSZY_g
+
+cookies:
+	server will give the cookies, then client will store that cookies in clients machine. since client has the access to cookies so they can modify it, hack it.
+	cookies are textual information which are stored in key value pair format to the clients browser during multiple request.
+	https://www.youtube.com/watch?v=LILHZhIV9sM
+	
+Socket: 
+
+	
+JDBC:
+	JDBC drivers are client-side adapters (installed on the client machine, not on the server) that convert requests from Java programs to a protocol that the DBMS can understand. There are 4 types of JDBC drivers:
+	Type-1 driver or JDBC-ODBC bridge driver:
+		This driver acts as a bridge between JDBC and ODBC (Open Database Connectivity), which is a C-based API for accessing databases. The driver converts JDBC calls into ODBC calls, allowing Java applications to access databases through ODBC drivers.
+		It requires an ODBC driver manager and the appropriate ODBC driver for the specific database.
+		It's typically used in scenarios where a direct JDBC driver is not available for a particular database but an ODBC driver is.
+	Type-2 driver or Native-API driver:
+		This driver uses the native database API provided by the database vendor to establish a connection. It uses native code (typically written in C/C++) to directly communicate with the database.
+    	It requires a client library specific to the database being accessed.
+		The driver communicates directly with the database server, providing better performance compared to the Type 1 driver.
+		However, it can be platform-dependent due to its reliance on native code.
+	Type-3 driver or Network Protocol driver:
+		This driver communicates with a middleware server that acts as an intermediary between the Java application and the database server.
+		The middleware server translates JDBC calls into a database-specific protocol that the actual database server understands.
+		It offers better portability as the middleware can be designed to support multiple databases without changing the Java application code.
+		It's particularly useful in situations where the database server might change or where multiple database systems need to be supported.
+	Type-4 driver or Thin driver:
+		This is also known as the Direct-to-Database Pure Java Driver.
+		It communicates directly with the database server using the database's native protocol, without requiring any additional client libraries or middleware.
+		It's entirely written in Java, making it platform-independent and easy to deploy.
+		The driver can achieve good performance since it communicates directly with the database server.
+		It's the most common type of driver used in modern JDBC applications.
+
+	Connection pool:
+	It is factory that contains readily available jdbc connection objects before actually being used.
+	we have to create data source object(DataSource obj) that represents jdbc connection pool.
+	All connection objects should be accessed through DataSource
+
+Class path:
+	It describes the location where required .class files are available.
+
+Path:
+	Giving path to machine where are java executables are stored.
+
+
+
+Application context
+
+Web Server VS Web Container vs Application Server
+	Web Server: Handles static content delivery (HTML, images, CSS) and basic HTTP protocol interactions.
+	Web Container (Servlet Container): Manages the execution of dynamic content using servlets and JSP. It's a subset of an application server.
+	Application Server: Provides a comprehensive environment for building and deploying complex enterprise applications, including web container functionality and additional services.
+
+
+
+
+
+
+
+
+	----------------------------------------------------------------------------------------------------------------------------------------
+	Servlet topics
+	
+1. **Servlet Basics:**
+   - What are servlets?
+   - Servlet lifecycle and methods (init, service, destroy).
+   - Servlet container and its role.
+   - Creating and deploying servlets.
+
+2. **Servlet Configuration:**
+   - web.xml deployment descriptor (or Java-based configuration in modern approaches).
+   - Servlet mappings.
+   - URL patterns and wildcard mappings.
+
+3. **HTTP Fundamentals:**
+   - Understanding HTTP methods (GET, POST, PUT, DELETE, etc.).
+   - HTTP headers and status codes.
+   - Working with request and response objects.
+
+4. **Servlet Collaboration:**
+   - Request dispatching and forwarding.
+   - Servlet chaining.
+   - Redirecting requests.
+
+5. **Session Management:**
+   - HTTP session and session tracking mechanisms.
+   - Cookies and URL rewriting.
+   - Session listeners and attributes.
+
+6. **Servlet Filters:**
+   - Introduction to filters and their purpose.
+   - Implementing filters for tasks like authentication, logging, compression, etc.
+   - Filter ordering and chaining.
+
+7. **Servlet Listeners:**
+   - Event listeners in servlets.
+   - Context listeners (ServletContextListener).
+   - Session listeners (HttpSessionListener).
+
+8. **Servlet Annotations (Java EE 6+):**
+   - @WebServlet, @WebInitParam, and other relevant annotations.
+   - Configuring servlets without web.xml.
+
+9. **Asynchronous Processing:**
+   - Servlet asynchronous processing.
+   - Using AsyncContext for long-running tasks.
+
+10. **Servlet Security:**
+    - Configuring security constraints in deployment descriptors.
+    - Authentication and authorization.
+    - Role-based security.
+
+11. **Error Handling:**
+    - Handling errors and exceptions in servlets.
+    - Configuring error pages.
+
+12. **File Upload and Download:**
+    - Handling file uploads using multipart/form-data.
+    - Serving files for download.
+
+13. **Servlet Threading and Concurrency:**
+    - Understanding thread safety in servlets.
+    - Dealing with concurrency issues.
+
+14. **Servlet Best Practices:**
+    - Design patterns for servlet development.
+    - Separation of concerns and modular design.
+    - Performance considerations.
+
+15. **Servlet Containers and Servers:**
+    - Understanding servlet container features.
+    - Deploying servlets on popular containers like Apache Tomcat, Jetty, etc.
+
+16. **JavaServer Pages (JSP) Integration:**
+    - Using JSPs in conjunction with servlets.
+    - JSP scripting elements.
+    - Expression Language (EL) usage.
+
+17. **Servlet API Enhancements (Jakarta EE):**
+    - Stay updated with the latest features and improvements in servlet APIs.
+
+18. **Web Application Architecture:**
+    - Understanding how servlets fit into the broader web application architecture.
+    - MVC pattern and servlets.
+
+----------------------------------------------------------------------------------------------------------------------------------
+
+Certainly! If you're aiming to become an expert in JavaServer Pages (JSP), there are various topics you should delve into. JSP is a technology used for creating dynamic web content in Java web applications. Here's a comprehensive list of topics to study:
+
+1. **JSP Basics:**
+   - What are JSPs and their role in web applications.
+   - JSP syntax and structure.
+   - JSP scripting elements (<% %>, <%= %>, <%-- -->, etc.).
+
+2. **JSP Lifecycle:**
+   - JSP initialization, execution, and destruction phases.
+   - How JSPs translate into servlets and their lifecycle.
+
+3. **JSP Implicit Objects:**
+   - Understanding and using built-in objects like `request`, `response`, `out`, `session`, `application`, etc.
+   - The JSP page context and page scope.
+
+4. **Expression Language (EL):**
+   - Using EL for accessing JavaBean properties and map values.
+   - Implicit objects in EL (e.g., `${}`, `${}`, etc.).
+   - EL operators and functions.
+
+5. **JSP Directives:**
+   - Page directive (`<%@ page %>`) and its attributes.
+   - Include directive (`<%@ include %>`).
+   - Taglib directive (`<%@ taglib %>`) for using custom tags.
+
+6. **JSP Actions:**
+   - Standard actions: `<jsp:include>`, `<jsp:forward>`, `<jsp:useBean>`, `<jsp:setProperty>`, `<jsp:getProperty>`, etc.
+   - Custom actions and tag libraries.
+
+7. **JSTL (JavaServer Pages Standard Tag Library):**
+   - Core JSTL tags (e.g., `<c:if>`, `<c:forEach>`, `<c:set>`, `<c:choose>`, etc.).
+   - Formatting and internationalization tags (`<fmt:formatDate>`, `<fmt:setLocale>`, etc.).
+
+8. **Custom Tag Development:**
+   - Creating custom tags and tag handlers.
+   - Tag files vs. tag classes.
+
+9. **JSP Error Handling:**
+   - Handling exceptions in JSP.	
+   - Configuring error pages in web.xml.
+
+10. **JSP Performance and Best Practices:**
+    - Minimizing scriptlet usage for better separation of concerns.
+    - Avoiding excessive use of EL in presentation logic.
+    - Caching and optimization techniques.
+
+11. **JSP Design Patterns:**
+    - Applying design patterns like Model-View-Controller (MVC) in JSP-based applications.
+    - Creating reusable components.
+
+12. **JSP Security:**
+    - Preventing cross-site scripting (XSS) and other security vulnerabilities.
+    - Using JSP tags and filters for input validation.
+
+13. **JSP Fragments and Tag Files:**
+    - Creating reusable page fragments using `<jsp:fragment>`.
+    - Using tag files for encapsulating complex logic.
+
+14. **JSP and Servlet Interaction:**
+    - Passing data between JSPs and servlets.
+    - Forwarding and redirecting requests.
+
+15. **JSP and AJAX:**
+    - Integrating AJAX with JSP using JavaScript frameworks like jQuery.
+
+16. **JSP and Internationalization:**
+    - Implementing multi-language support in JSP.
+    - Using resource bundles for localization.
+
+17. **JSP Deployment:**
+    - Packaging JSPs in web applications.
+    - Deploying JSPs on servlet containers or application servers.
+
+18. **JSP 2.0+ Features (Java EE 5+):**
+    - Stay updated with the latest JSP specifications and features.
